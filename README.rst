@@ -38,12 +38,14 @@ Usage
 * Put your private requirements (if any) into a ``vendor/`` directory, as
   python packages.
 
-::
+.. code :: shell
 
     pip install ssh
     pip install https://github.com/brutasse/fab-bundle/tarball/master#egg=fab-bundle
 
-Create a ``fabfile.py`` file in your project root::
+Create a ``fabfile.py`` file in your project root
+
+.. code :: python
 
     from fab_bundle import env, task, bootstrap, deploy, destroy, ssh
 
@@ -67,11 +69,15 @@ Create a ``fabfile.py`` file in your project root::
             '…': 'etc etc',
         }
 
-Bootstrap the server setup::
+Bootstrap the server setup
+
+.. code :: shell
 
     fab production bootstrap
 
-Deploy your package::
+Deploy your package
+
+.. code :: shell
 
     fab production deploy
 
@@ -82,14 +88,18 @@ For subsequent deploys you don't need to run ``bootstrap`` again, although
 doing so is harmless.
 
 To deploy a specific version (for instance for rolling back), add your version
-number as an argument::
+number as an argument
+
+.. code :: shell
 
     fab production deploy:1.1.2
 
 Note that this will **not** re-upload the package if it's already been
 uploaded.
 
-Should you ever need a plain shell, do::
+Should you ever need a plain shell, do
+
+.. code :: shell
 
     fab production ssh
 
@@ -109,7 +119,9 @@ Reporting
 `````````
 
 Every day you get an email with the load average, out-of-date packages and
-disk space available on your machine. This email is sent to ``env.admin``::
+disk space available on your machine. This email is sent to ``env.admin``
+
+.. code :: python
 
     env.admin = 'email@example.com'
 
@@ -136,7 +148,9 @@ Gunicorn
 Gunicorn uses the ``gevent`` worker class, ``gevent`` and ``greenlet`` will be
 installed in your bundle virtualenv.
 
-It also uses 2 workers by default. To change the number of workers, do::
+It also uses 2 workers by default. To change the number of workers, do
+
+.. code :: python
 
     env.workers = 4
 
@@ -146,7 +160,9 @@ Bundle location
 ```````````````
 
 Bundles are put in ``$HOME/bundles`` by default. To change this, set
-``bundle_root``::
+``bundle_root``
+
+.. code :: python
 
     def production():
         # ...
@@ -156,7 +172,9 @@ STATIC and MEDIA files
 ``````````````````````
 
 You can configure your application to use the correct locations using the
-``STATIC_ROOT`` and ``MEDIA_ROOT`` environment variables::
+``STATIC_ROOT`` and ``MEDIA_ROOT`` environment variables
+
+.. code :: python
 
     STATIC_ROOT = os.environ['STATIC_ROOT']
     MEDIA_ROOT = os.environ['MEDIA_ROOT']
@@ -167,14 +185,18 @@ respectively.
 Sentry
 ``````
 
-Set a ``SENTRY_DSN`` environment variable::
+Set a ``SENTRY_DSN`` environment variable
+
+.. code :: python
 
     env.env = {
         'SENTRY_DSN': 'https://…',
     }
 
 Then use ``raven`` directly. By default raven looks for the environment
-variable::
+variable
+
+.. code :: python
 
     from raven import Client
     client = Client()
@@ -183,7 +205,9 @@ variable::
 Sending Email
 `````````````
 
-Expose your email configuration secrets as an environment variable::
+Expose your email configuration secrets as an environment variable
+
+.. code :: python
 
     env.env = {
         'FROM_EMAIL': 'Example <hi@example.com>',
@@ -198,18 +222,24 @@ Postgres
 
 Fab-bundle will try to install postgres 9.1. If it's not available on your
 system, you'll need to check which version you have, make sure you pick the
-one that works with postgis as well::
+one that works with postgis as well
+
+.. code :: shell
 
     apt-cache search postgis
 
-This outputs stuff like ``postgresql-8.4-postgis``. Then set::
+This outputs stuff like ``postgresql-8.4-postgis``. Then set
+
+.. code :: python
 
     env.pg_version = '8.4'
 
 You will get daily DB backups in ``$HOME/dbs``, they're kept for 7 days and
 then rotated, so it's up to you to back them up offsite if you need to.
 
-To configure your application, set an environment variable::
+To configure your application, set an environment variable
+
+.. code :: python
 
     env.env = {
         'DATABASE_URL': 'postgis://postgres:@localhost/example.com',
@@ -226,14 +256,16 @@ Migrations
 
 Only Nashvegas is currently supported.
 
-::
+.. code :: python
 
     def production():
         # ...
         env.migrations = 'nashvegas'
 
 Note that you need to provide the path to your migrations in
-``NASHVEGAS_MIGRATIONS_DIRECTORY``, for instance in your settings::
+``NASHVEGAS_MIGRATIONS_DIRECTORY``, for instance in your settings
+
+.. code :: python
 
     NASHVEGAS_MIGRATIONS_DIRECTORY = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
@@ -243,7 +275,9 @@ Note that you need to provide the path to your migrations in
 Staticfiles
 ```````````
 
-They're enabled by default. To disable them::
+They're enabled by default. To disable them
+
+.. code :: python
 
     def production():
         # ...
@@ -252,7 +286,9 @@ They're enabled by default. To disable them::
 Cron tasks
 ``````````
 
-To add scheduled tasks::
+To add scheduled tasks
+
+.. code :: python
 
     def production():
         # ...
@@ -275,7 +311,9 @@ Cron commands' stdout and stderr are appended to
 Private index server
 ````````````````````
 
-If you have your own PyPI for deployments, you can point to it like this::
+If you have your own PyPI for deployments, you can point to it like this
+
+.. code :: python
 
     def production():
         # ...
@@ -288,7 +326,9 @@ here.
 RQ tasks
 ````````
 
-`RQ`_ support is opt-in. You can set the number of workers like this::
+`RQ`_ support is opt-in. You can set the number of workers like this
+
+.. code :: python
 
     def production():
         # ...
@@ -301,7 +341,9 @@ RQ tasks
 You still need to specify the python requirements yourself. Note that the
 ``rqworker`` will use the redis database specified in ``env.cache``. You also
 need to pass this number to your application using an environment variable and
-configure the ``RQ`` setting::
+configure the ``RQ`` setting
+
+.. code :: python
 
     env.env = {
         'REDIS_URL': 'redis://localhost:6379/2',
@@ -330,7 +372,9 @@ decide whether the file should be served or not via a header. This is called
 .. _XSendfile: http://wiki.nginx.org/XSendfile
 
 To make this work with fab-bundle, set env.xsendfile to the list of locations
-you want to protect::
+you want to protect
+
+.. code :: python
 
     env.xsendfile = [
         '/media/private/',
@@ -339,7 +383,9 @@ you want to protect::
 
 Note that your ``MEDIA_ROOT`` is served under the ``/media/`` URL prefix.
 
-Then in your view::
+Then in your view
+
+.. code :: python
 
     response = HttpResponse(mimetype='application/octet-stream')
     response['X-Accel-Redirect'] = '/media/private/file-one.zip'
@@ -350,14 +396,18 @@ GIS
 
 Fab-bundle installs the libraries required by geodjango and creates all the
 databases from a spatial template. If you don't need this, you can disable GIS
-support by setting ``env.gis``::
+support by setting ``env.gis``
+
+.. code :: python
 
     env.gis = False
 
 Rolling back
 ------------
 
-Had a bad deploy? It happens. Rollback to a previous version, let's say 1.2::
+Had a bad deploy? It happens. Rollback to a previous version, let's say 1.2
+
+.. code :: shell
 
     fab production deploy:1.2
 
@@ -365,7 +415,9 @@ Backing up
 ----------
 
 Databases are dumped every day, you can sync them as well as your media files
-using a script such as::
+using a script such as
+
+.. code :: bash
 
     #! /bin/sh
     mkdir -p log dbs
@@ -379,6 +431,8 @@ using a script such as::
 Cleaning up
 -----------
 
-Want to remove your app? This will remove everything related to your bundle::
+Want to remove your app? This will remove everything related to your bundle
+
+.. code :: shell
 
     fab production destroy
