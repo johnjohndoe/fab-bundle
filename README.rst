@@ -39,12 +39,14 @@ Usage
 * Put your private requirements (if any) into a ``vendor/`` directory, as
   python packages.
 
-::
+.. code :: python
 
     pip install ssh
     pip install https://github.com/brutasse/fab-bundle/tarball/master#egg=fab-bundle
 
-Create a ``fabfile.py`` file in your project root::
+Create a ``fabfile.py`` file in your project root
+
+.. code :: python
 
     from fab_bundle import env, task, bootstrap, deploy, destroy, ssh
 
@@ -106,7 +108,9 @@ Reporting
 `````````
 
 Every day you get an email with the load average, out-of-date packages and
-disk space available on your machine. This email is sent to ``env.admin``::
+disk space available on your machine. This email is sent to ``env.admin``
+
+.. code :: python
 
     env.admin = 'email@example.com'
 
@@ -114,7 +118,9 @@ HTTPS
 `````
 
 Fab-bundle checks for the presence of ``ssl_key`` and ``ssl_cert`` in
-``env``::
+``env``
+
+.. code :: python
 
         env.ssl_cert = '/path/to/ssl_cert.crt'
         env.ssl_key = '/path/to/ssl_cert_key.key'
@@ -133,7 +139,9 @@ Gunicorn
 Gunicorn uses the ``gevent`` worker class, ``gevent`` and ``greenlet`` will be
 installed in your bundle virtualenv.
 
-It also uses 2 workers by default. To change the number of workers, do::
+It also uses 2 workers by default. To change the number of workers, do
+
+.. code :: python
 
     env.workers = 4
 
@@ -141,7 +149,9 @@ Bundle location
 ```````````````
 
 Bundles are put in ``$HOME/bundles`` by default. To change this, set
-``bundle_root``::
+``bundle_root``
+
+.. code :: python
 
     def production():
         # ...
@@ -150,7 +160,9 @@ Bundles are put in ``$HOME/bundles`` by default. To change this, set
 Sentry
 ``````
 
-You can use Sentry in remote mode, by adding this to the ``env`` object::
+You can use Sentry in remote mode, by adding this to the ``env`` object
+
+.. code :: python
 
     def production():
         # ...
@@ -161,7 +173,7 @@ Make sure your project itself is configured to use ``raven``.
 Sending Email
 `````````````
 
-::
+.. code :: python
 
     def production():
         # ...
@@ -183,7 +195,9 @@ one that works with postgis as well::
 
     apt-cache search postgis
 
-This outputs stuff like ``postgresql-8.4-postgis``. Then set::
+This outputs stuff like ``postgresql-8.4-postgis``. Then set
+
+.. code :: python
 
     env.pg_version = '8.4'
 
@@ -195,14 +209,16 @@ Migrations
 
 Nashvegas and South are supported.
 
-::
+.. code :: python
 
     def production():
         # ...
         env.migrations = 'nashvegas'
 
 Note that you need to provide the path to your migrations in
-``NASHVEGAS_MIGRATIONS_DIRECTORY``, for instance in your base settings::
+``NASHVEGAS_MIGRATIONS_DIRECTORY``, for instance in your base settings
+
+.. code :: python
 
     NASHVEGAS_MIGRATIONS_DIRECTORY = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
@@ -210,7 +226,7 @@ Note that you need to provide the path to your migrations in
     )
 
 
-::
+.. code :: python
 
     def production():
         # ...
@@ -220,7 +236,9 @@ Note that you need to provide the path to your migrations in
 Staticfiles
 ```````````
 
-They're enabled by default. To disable them::
+They're enabled by default. To disable them
+
+.. code :: python
 
     def production():
         # ...
@@ -229,7 +247,9 @@ They're enabled by default. To disable them::
 Cron tasks
 ``````````
 
-To add scheduled tasks::
+To add scheduled tasks
+
+.. code :: python
 
     def production():
         # ...
@@ -252,7 +272,9 @@ Cron commands' stdout and stderr are appended to
 Private index server
 ````````````````````
 
-If you have your own PyPI for deployments, you can point to it like this::
+If you have your own PyPI for deployments, you can point to it like this
+
+.. code :: python
 
     def production():
         # ...
@@ -265,7 +287,9 @@ here.
 RQ tasks
 ````````
 
-`RQ`_ support is opt-in. You can set the number of workers like this::
+`RQ`_ support is opt-in. You can set the number of workers like this
+
+.. code :: python
 
     def production():
         # ...
@@ -278,7 +302,9 @@ RQ tasks
 You still need to specify the python requirements yourself. Note that the
 ``rqworker`` will use the redis database specified in ``env.cache``, and the
 following setting will be added (the number will vary depending on
-``env.cache``::
+``env.cache``
+
+.. code :: python
 
     RQ = {
         'db': 0,
@@ -291,7 +317,9 @@ Celery tasks
 ````````````
 
 Celery is supported. At the moment, only Redis backend is supported.
-You can set it up with like this::
+You can set it up with like this
+
+.. code :: python
 
     def production():
         # ...
@@ -325,7 +353,9 @@ Custom settings
 ```````````````
 
 If you need custom settings that are only suited to your production
-environment, set them as a string in ``env.settings``::
+environment, set them as a string in ``env.settings``
+
+.. code :: python
 
     from textwrap import dedent
 
@@ -342,7 +372,9 @@ Cache number
 ````````````
 
 If you have several bundles on the same server and they use cache, you may
-want to specify the ID of the redis DB to use::
+want to specify the ID of the redis DB to use
+
+.. code :: python
 
     env.cache = 1
 
@@ -356,7 +388,9 @@ decide whether the file should be served or not via a header. This is called
 .. _XSendfile: http://wiki.nginx.org/XSendfile
 
 To make this work with fab-bundle, set env.xsendfile to the list of locations
-you want to protect::
+you want to protect
+
+.. code :: python
 
     env.xsendfile = [
         '/media/private/',
@@ -365,7 +399,9 @@ you want to protect::
 
 Note that your ``MEDIA_ROOT`` is served under the ``/media/`` URL prefix.
 
-Then in your view::
+Then in your view
+
+.. code :: python
 
     response = HttpResponse(mimetype='application/octet-stream')
     response['X-Accel-Redirect'] = '/media/private/file-one.zip'
@@ -376,7 +412,9 @@ GIS
 
 Fab-bundle installs the libraries required by geodjango and creates all the
 databases from a spatial template. If you don't need this, you can disable GIS
-support by setting ``env.gis``::
+support by setting ``env.gis``
+
+.. code :: python
 
     env.gis = False
 
@@ -398,7 +436,9 @@ Backing up
 ----------
 
 Databases are dumped every day, you can sync them as well as your media files
-using a script such as::
+using a script such as
+
+.. code :: bash
 
     #! /bin/sh
     mkdir -p log dbs
